@@ -23,4 +23,4 @@ This repo contains the required preparation steps for the workshop:
     ![Chat bot successful prompt](chat-web.png)
   - If you get a response, you're all set!
 
-> Note on the container & volume lifetime: Both Ollama and the vector are persistent, meaning they can be reused across debug session. You can stop the containers now, but do not delete the volumes or you'll need to redownload the models respectively loose any saved embeddings.
+> Note on the container & volume lifetime: Both Ollama and the vector store are persistent, meaning they can be reused across debug session. You can stop the containers now, but do not delete the volumes or you'll need to redownload the models respectively loose any saved embeddings.
