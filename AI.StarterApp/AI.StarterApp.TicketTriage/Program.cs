@@ -40,6 +40,8 @@ await host.StartAsync();
 
 var solution = host.Services.GetRequiredService<ISolution>();
 
+// var evaluationRecords = InVisibleDataSet.Data.Records.ToArray();
+// var faqArticles = InVisibleDataSet.Data.FAQArticles.ToArray();
 var evaluationRecords = VisibleDataSet.Data.Records.ToArray();
 var faqArticles = VisibleDataSet.Data.FAQArticles.ToArray();
 
