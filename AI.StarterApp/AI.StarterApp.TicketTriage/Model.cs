@@ -1,18 +1,16 @@
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 
 namespace AI.StarterApp.TicketTriage;
 
-union TicketAction(
-    FAQ,
-    Duplicate,
-    NewTicket
-);
+[JsonPolymorphic(InferClosedTypePolymorphism = true)]
+closed record TicketAction;
 
 /// <summary>
 /// The incoming message can be fully answered based on the knowledge base. If not, the message should be classified as NewTicket
 /// </summary>
 /// <param name="RelevantFAQArticles">The set of FAQ articles that are relevant to the incoming message</param>
-internal sealed record FAQ(ImmutableHashSet<FAQArticleId> RelevantFAQArticles)
+internal sealed record FAQ(ImmutableHashSet<FAQArticleId> RelevantFAQArticles) : TicketAction
 {
     public override int GetHashCode()
     {
@@ -35,7 +33,7 @@ internal sealed record FAQ(ImmutableHashSet<FAQArticleId> RelevantFAQArticles)
 /// also fully answer the incoming message. If not, the message should be classified as NewTicket.
 /// </summary>
 /// <param name="TicketNr">The existing ticket number</param>
-internal sealed record Duplicate(Guid TicketNr);
+internal sealed record Duplicate(Guid TicketNr) : TicketAction;
 
 /// <summary>
 /// The incoming message is a new ticket that needs to be created for the given category, severity, and affected devices. 
@@ -43,7 +41,7 @@ internal sealed record Duplicate(Guid TicketNr);
 /// <param name="Category">The category of the new ticket</param>
 /// <param name="Kind">The severity of the new ticket</param>
 /// <param name="AffectedDevices">The set of affected devices for the new ticket</param>
-internal sealed record NewTicket(Category Category, Kind Kind, ImmutableHashSet<AffectedDevices> AffectedDevices)
+internal sealed record NewTicket(Category Category, Kind Kind, ImmutableHashSet<AffectedDevices> AffectedDevices) : TicketAction
 {
     public override int GetHashCode()
     {
@@ -128,19 +126,19 @@ internal static class TicketActionExtensions
     {
         public static double Score(TicketAction a, TicketAction b)
         {
-            if (a.Value.GetType() != b.Value.GetType())
+            if (a.GetType() != b.GetType())
             {
                 return 0;
             }
 
-            return (a.Value, b.Value) switch
+            return (a, b) switch
             {
                 (FAQ faqA, FAQ faqB) => Jaccard(faqA.RelevantFAQArticles, faqB.RelevantFAQArticles),
                 (NewTicket newTicketA, NewTicket newTicketB) =>
                       0.4 * Score(newTicketA.Category, newTicketB.Category)
                     + 0.4 * Score(newTicketA.Kind, newTicketB.Kind)
                     + 0.2 * Jaccard(newTicketA.AffectedDevices, newTicketB.AffectedDevices),
-                (_, _) => Score(a.Value, b.Value)
+                (_, _) => Score(a, b)
             };
         }
     }

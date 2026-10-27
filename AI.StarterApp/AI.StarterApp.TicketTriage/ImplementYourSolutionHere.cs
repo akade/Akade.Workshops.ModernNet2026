@@ -14,7 +14,11 @@ internal sealed class ImplementYourSolutionHere(
     VectorStoreCollection<ulong, FAQRecord> faqCollection) : ISolution, ISolutionRegistration
 {
     // Pass to chatClient.GetResponseAsync<TicketAction>(prompt, _chatOptions) to disable thinking in Ollama
-    private readonly ChatOptions _chatOptions = new ChatOptions().AddOllamaOption(OllamaOption.Think, false);
+    private readonly ChatOptions _chatOptions = new ChatOptions()
+    {
+        ResponseFormat = ChatResponseFormat.ForJsonSchema<TicketAction>()
+    };
+
 
     private FAQArticleId[] _articleIds = [];
 
