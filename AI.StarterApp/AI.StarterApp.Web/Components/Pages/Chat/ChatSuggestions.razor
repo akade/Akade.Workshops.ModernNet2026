@@ -1,3 +1,5 @@
+@using OllamaSharp
+@using OllamaSharp.Models
 @inject IChatClient ChatClient
 
 @if (suggestions is not null)
@@ -23,6 +25,7 @@
 
     private string[]? suggestions;
     private CancellationTokenSource? cancellation;
+    private readonly ChatOptions chatOptions = new ChatOptions().AddOllamaOption(OllamaOption.Think, false);
 
     [Parameter]
     public EventCallback<ChatMessage> OnSelected { get; set; }
@@ -48,6 +51,7 @@
         {
             var response = await ChatClient.GetResponseAsync<string[]>(
                 [.. ReduceMessages(messages), new(ChatRole.User, Prompt)],
+                chatOptions,
                 cancellationToken: cancellation.Token);
             if (!response.TryGetResult(out suggestions))
             {

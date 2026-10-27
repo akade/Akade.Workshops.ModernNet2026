@@ -8,13 +8,26 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
-builder.AddOllamaApiClient("chat")
-    .AddChatClient()
-    .UseFunctionInvocation()
-    .UseOpenTelemetry(configure: c =>
-        c.EnableSensitiveData = builder.Environment.IsDevelopment());
-builder.AddOllamaApiClient("embeddings")
-    .AddEmbeddingGenerator();
+if (builder.Configuration["AI_PROVIDER"] == "openai")
+{
+    builder.AddOpenAIClient("chat")
+        .AddChatClient()
+        .UseFunctionInvocation()
+        .UseOpenTelemetry(configure: c =>
+            c.EnableSensitiveData = builder.Environment.IsDevelopment());
+    builder.AddOpenAIClient("embeddings")
+        .AddEmbeddingGenerator();
+}
+else
+{
+    builder.AddOllamaApiClient("chat")
+        .AddChatClient()
+        .UseFunctionInvocation()
+        .UseOpenTelemetry(configure: c =>
+            c.EnableSensitiveData = builder.Environment.IsDevelopment());
+    builder.AddOllamaApiClient("embeddings")
+        .AddEmbeddingGenerator();
+}
 
 builder.AddQdrantClient("vectordb");
 builder.Services.AddQdrantVectorStore();

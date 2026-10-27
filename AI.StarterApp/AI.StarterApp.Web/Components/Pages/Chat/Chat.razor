@@ -1,5 +1,7 @@
 ﻿@page "/"
 @using System.ComponentModel
+@using OllamaSharp
+@using OllamaSharp.Models
 @inject IChatClient ChatClient
 @inject NavigationManager Nav
 @inject SemanticSearch Search
@@ -43,7 +45,7 @@
         ";
 
     private int statefulMessageCount;
-    private readonly ChatOptions chatOptions = new();
+    private readonly ChatOptions chatOptions = new ChatOptions().AddOllamaOption(OllamaOption.Think, false);
     private readonly List<ChatMessage> messages = new();
     private CancellationTokenSource? currentResponseCancellation;
     private ChatMessage? currentResponseMessage;

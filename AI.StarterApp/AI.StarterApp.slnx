@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="AI.StarterApp.AppHost/AI.StarterApp.AppHost.csproj" />
+  <Project Path="AI.StarterApp.TicketTriage/AI.StarterApp.TicketTriage.csproj" />
   <Project Path="AI.StarterApp.ServiceDefaults/AI.StarterApp.ServiceDefaults.csproj" />
   <Project Path="AI.StarterApp.Web/AI.StarterApp.Web.csproj" />
 </Solution>
