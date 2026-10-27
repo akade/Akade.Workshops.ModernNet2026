@@ -39,12 +39,12 @@ internal sealed class ImplementYourSolutionHere(
     {
         TicketAction result = Random.Shared.Next(3) switch
         {
-            0 when _articleIds.Length > 0 => new TicketAction(new FAQ([Random.Shared.GetItems(_articleIds, 1)[0]])),
-            1 => new TicketAction(new Duplicate(Guid.NewGuid())),
-            _ => new TicketAction(new NewTicket(
+            0 when _articleIds.Length > 0 => new FAQ([Random.Shared.GetItems(_articleIds, 1)[0]]),
+            1 => new Duplicate(Guid.NewGuid()),
+            _ => new NewTicket(
                 Random.Shared.GetItems(Enum.GetValues<Category>(), 1)[0],
                 Random.Shared.GetItems(Enum.GetValues<Kind>(), 1)[0],
-                ImmutableHashSet<AffectedDevices>.Empty))
+                ImmutableHashSet<AffectedDevices>.Empty)
         };
 
         return Task.FromResult(result);
